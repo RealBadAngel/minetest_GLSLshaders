@@ -1104,7 +1104,6 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data):
 	*/
 
 	mapblock_mesh_generate_special(data, collector);
-	
 
 	/*
 		Convert MeshCollector to SMesh
@@ -1112,15 +1111,11 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data):
 	bool enable_bumpmapping = g_settings->getBool("enable_bumpmapping");
 	bool enable_shaders = g_settings->getBool("enable_shaders");
 	video::E_MATERIAL_TYPE shadermat1 = m_gamedef->getShaderSource()->
-			getShader("test_shader_1").material;
+			getShader("solids_shader").material;
 	video::E_MATERIAL_TYPE shadermat2 = m_gamedef->getShaderSource()->
-			getShader("test_shader_2").material;
+			getShader("liquids_shader").material;
 	video::E_MATERIAL_TYPE shadermat3 = m_gamedef->getShaderSource()->
-			getShader("test_shader_3").material;
-	video::E_MATERIAL_TYPE bumpmaps1 = m_gamedef->getShaderSource()->
-			getShader("bumpmaps_solids").material;
-	video::E_MATERIAL_TYPE bumpmaps2 = m_gamedef->getShaderSource()->
-			getShader("bumpmaps_liquids").material;
+			getShader("alpha_shader").material;
 
 	for(u32 i = 0; i < collector.prebuffers.size(); i++)
 	{
@@ -1199,23 +1194,20 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data):
 		material.setFlag(video::EMF_BILINEAR_FILTER, false);
 		material.setFlag(video::EMF_FOG_ENABLE, true);
 		//material.setFlag(video::EMF_ANTI_ALIASING, video::EAAM_OFF);
-		//material.setFlag(video::EMF_ANTI_ALIASING, video::EAAM_SIMPLE);
+		material.setFlag(video::EMF_ANTI_ALIASING, video::EAAM_SIMPLE);
 		material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF;
 		material.setTexture(0, p.tile.texture);
-	
-		if (enable_shaders) {
-			video::E_MATERIAL_TYPE smat1 = shadermat1;
-			video::E_MATERIAL_TYPE smat2 = shadermat2;
-			video::E_MATERIAL_TYPE smat3 = shadermat3;
-			
-			if (enable_bumpmapping) {
-				ITextureSource *tsrc = data->m_gamedef->tsrc();
-				std::string fname_base = tsrc->getTextureName(p.tile.texture_id);
 
+		if (enable_shaders) {
+			ITextureSource *tsrc = data->m_gamedef->tsrc();
+			material.setTexture(2, tsrc->getTexture("disable_img.png"));
+			material.setTexture(3, tsrc->getTexture("reflection.png"));
+			if (enable_bumpmapping) {
+				std::string fname_base = tsrc->getTextureName(p.tile.texture_id);
 				std::string normal_ext = "_normal.png";
 				size_t pos = fname_base.find(".");
 				std::string fname_normal = fname_base.substr(0, pos) + normal_ext;
-				
+
 				if (tsrc->isKnownSourceImage(fname_normal)) {
 					// look for image extension and replace it 
 					size_t i = 0;
@@ -1223,15 +1215,11 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data):
 						fname_base.replace(i, 4, normal_ext);
 						i += normal_ext.length();
 					}
-					
 					material.setTexture(1, tsrc->getTexture(fname_base));
-					
-					smat1 = bumpmaps1;
-					smat2 = bumpmaps2;
+					material.setTexture(2, tsrc->getTexture("enable_img.png"));
 				}
 			}
-			
-			p.tile.applyMaterialOptionsWithShaders(material, smat1, smat2, smat3);
+			p.tile.applyMaterialOptionsWithShaders(material, shadermat1, shadermat2, shadermat3);
 		} else {
 			p.tile.applyMaterialOptions(material);
 		}
