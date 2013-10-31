@@ -3,14 +3,37 @@ uniform mat4 mWorldViewProj;
 uniform mat4 mInvWorld;
 uniform mat4 mTransWorld;
 uniform float dayNightRatio;
+uniform vec3 eyePosition;
 
 varying vec3 vPosition;
+varying vec3 viewVec;
+varying vec3 T,B,N;
+varying vec3 worldPos;
+varying vec4 fragPos; 
+varying vec3 viewPos;
+varying vec3 cameraPos;
+varying vec2 uv;
 
 void main(void)
 {
 	gl_Position = mWorldViewProj * gl_Vertex;
 
 	vPosition = (mWorldViewProj * gl_Vertex).xyz;
+	vec3 pos = vec3(gl_Vertex);
+
+	vec3 c1 = cross( gl_Normal, vec3(0.0, 0.0, 1.0) ); 
+	vec3 c2 = cross( gl_Normal, vec3(0.0, 1.0, 0.0) ); 
+	if( length(c1)>length(c2) )
+		T = c1;
+	else
+		T = c2;
+	N   = gl_Normal; 
+	B   = cross(N, T);
+
+	worldPos = vec3(mTransWorld * gl_Vertex);
+	fragPos = ftransform();
+	viewPos = pos - gl_ModelViewMatrixInverse[3].xyz;
+	cameraPos = eyePosition;
 
 	vec4 color;
 	//color = vec4(1.0, 1.0, 1.0, 1.0);
@@ -24,7 +47,7 @@ void main(void)
 	color.b = color.r;*/
 
 	float rg = mix(night, day, dayNightRatio);
-	rg += light_source * 1.0; // Make light sources brighter
+	rg += light_source * 1.5; // Make light sources brighter
 	float b = rg;
 
 	// Moonlight is blue
@@ -42,6 +65,13 @@ void main(void)
 	color.r = rg;
 	color.g = rg;
 	color.b = b;
+
+	// Make sides and bottom darker than the top
+	color = color * color; // SRGB -> Linear
+	if(gl_Normal.y <= 0.5)
+		color *= 0.6;
+		//color *= 0.7;
+	color = sqrt(color); // Linear -> SRGB
 
 	color.a = gl_Color.a;
 

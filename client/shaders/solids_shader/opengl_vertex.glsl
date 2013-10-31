@@ -4,13 +4,29 @@ uniform mat4 mInvWorld;
 uniform mat4 mTransWorld;
 uniform float dayNightRatio;
 
+uniform vec3 eyePosition;
+
 varying vec3 vPosition;
+varying vec3 eyeVec;
+varying vec3 tsEyeVec;
+varying vec3 normal;
 
 void main(void)
 {
 	gl_Position = mWorldViewProj * gl_Vertex;
-
 	vPosition = (mWorldViewProj * gl_Vertex).xyz;
+
+	normal = normalize (gl_NormalMatrix * gl_Normal);
+	vec3 tangent,binormal; 
+
+	//This is temporary. TODO: Find a way to pass tangent to shader
+	tangent  = normalize(gl_NormalMatrix * gl_Color.rgb);
+
+	binormal = cross(normal, tangent); 
+	binormal = normalize(binormal);
+	mat3 TBNMatrix = mat3(tangent, binormal, normal);
+	eyeVec =  normalize (eyePosition - vPosition);
+	tsEyeVec = eyeVec * TBNMatrix;
 
 	vec4 color;
 	//color = vec4(1.0, 1.0, 1.0, 1.0);
@@ -24,7 +40,7 @@ void main(void)
 	color.b = color.r;*/
 
 	float rg = mix(night, day, dayNightRatio);
-	rg += light_source * 1.0; // Make light sources brighter
+	rg += light_source * 1.5; // Make light sources brighter
 	float b = rg;
 
 	// Moonlight is blue
@@ -55,4 +71,5 @@ void main(void)
 	gl_FrontColor = gl_BackColor = color;
 
 	gl_TexCoord[0] = gl_MultiTexCoord0;
+
 }
