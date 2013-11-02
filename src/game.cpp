@@ -819,7 +819,12 @@ public:
 
 		float parallax_mapping_mode = g_settings->getFloat("parallax_mapping_mode");
 		services->setPixelShaderConstant("parallaxMappingMode", &parallax_mapping_mode, 1);
-
+		if (parallax_mapping_mode > 0){
+			float parallax_mapping_scale = g_settings->getFloat("parallax_mapping_scale");
+			services->setPixelShaderConstant("parallaxMappingScale", &parallax_mapping_scale, 1);
+			float parallax_mapping_bias = g_settings->getFloat("parallax_mapping_bias");
+			services->setPixelShaderConstant("parallaxMappingBias", &parallax_mapping_bias, 1);
+		}
 		// Normal map texture layer
 		int layer1 = 1;
 		int layer2 = 2;
