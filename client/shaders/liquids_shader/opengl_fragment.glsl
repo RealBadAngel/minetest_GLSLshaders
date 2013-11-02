@@ -40,7 +40,7 @@ float waterDensity = 0.0; //water density (0.0-1.0)
     
 float choppy = 0.00; //wave choppyness
 float aberration = 0.003; //chromatic aberration amount
-float bump = 1.5; //overall water surface bumpyness
+float bump = 2.5; //overall water surface bumpyness
 float reflBump = 0.20; //reflection distortion amount
 float refrBump = 0.08; //refraction distortion amount
 
@@ -89,7 +89,7 @@ vec2 fragCoord = fragPos.xy;
 	fragCoord = clamp(fragCoord,0.002,0.998);
 	vec3 sunPos = vec3(0.0);
 	sunPos.x=sin((timeOfDay-0.5)*3.14159);
-	float timer = timeOfDay*1500;
+	float timer = timeOfDay*1600;
 	//cameraPos = eyePosition;
 
 	//normal map
@@ -195,7 +195,7 @@ vec2 fragCoord = fragPos.xy;
     //color = (cameraPos.z<0.0)?mix(color, watercolor*darkness, clamp(fog/ waterext,0.0,1.0)):color;
 	
     color = color+ specColor*specular;
-    float alpha = clamp((color.r+color.b+color.g)*1.2,0.1,0.9);
+    float alpha = clamp((color.r+color.b+color.g)*1.2,0.1,0.7);
  
 	vec4 col = vec4(color.r, color.g, color.b, alpha);
 	col *= gl_Color;

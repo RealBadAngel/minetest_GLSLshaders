@@ -833,11 +833,11 @@ public:
 #if (IRRLICHT_VERSION_MAJOR == 1 && IRRLICHT_VERSION_MINOR < 8)
 		services->setPixelShaderConstant("normalTexture" , (irr::f32*)&layer1, 1);
 		services->setPixelShaderConstant("useNormalmap" , (irr::f32*)&layer2, 1);
-		services->setPixelShaderConstant("reflectionTexture" , (irr::f32*)&layer3, 1);
+		services->setPixelShaderConstant("normalSampler" , (irr::f32*)&layer3, 1);
 #else
 		services->setPixelShaderConstant("normalTexture" , (irr::s32*)&layer1, 1);
 		services->setPixelShaderConstant("useNormalmap" , (irr::s32*)&layer2, 1);
-		services->setPixelShaderConstant("reflectionTexture" , (irr::s32*)&layer3, 1);
+		services->setPixelShaderConstant("normalSampler" , (irr::s32*)&layer3, 1);
 #endif
 	}
 };
