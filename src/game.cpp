@@ -817,6 +817,9 @@ public:
 			enable_bumpmapping = 1;
 		services->setPixelShaderConstant("enableBumpmapping", &enable_bumpmapping, 1);
 
+		float parallax_mapping_mode = g_settings->getFloat("parallax_mapping_mode");
+		services->setPixelShaderConstant("parallaxMappingMode", &parallax_mapping_mode, 1);
+
 		// Normal map texture layer
 		int layer1 = 1;
 		int layer2 = 2;
@@ -829,6 +832,7 @@ public:
 #else
 		services->setPixelShaderConstant("normalTexture" , (irr::s32*)&layer1, 1);
 		services->setPixelShaderConstant("useNormalmap" , (irr::s32*)&layer2, 1);
+		services->setPixelShaderConstant("reflectionTexture" , (irr::s32*)&layer3, 1);
 #endif
 	}
 };

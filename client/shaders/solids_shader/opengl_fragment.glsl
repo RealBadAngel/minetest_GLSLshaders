@@ -3,7 +3,7 @@ uniform sampler2D normalTexture;
 uniform sampler2D useNormalmap;
 
 uniform float enableBumpmapping;
-uniform float enableParallaxmapping;
+uniform float parallaxMappingMode;
 
 uniform vec4 skyBgColor;
 uniform float fogDistance;
@@ -18,9 +18,8 @@ void main (void)
 {
 	float use_normalmap = texelFetch(useNormalmap,ivec2(1,1),0).r;
 	float enable_bumpmapping = enableBumpmapping;
-
 	// 0 - parallax mapping off, 1 - parallax mapping, 2 - steep parallax mapping
-	float enable_parallaxmapping = 1;
+
 	float parallax_scale = 0.08;
 	float parallax_bias = 0.04;
 	
@@ -29,13 +28,13 @@ void main (void)
 	float height;
 	vec2 tsEye = -tsEyeVec.xy;
 
-	if ((enable_parallaxmapping==1) && (use_normalmap>0)) {
+	if ((parallaxMappingMode==1) && (use_normalmap>0)) {
 		float map_height = texture2D(normalTexture, uv).a;
 			float height = parallax_scale * map_height - parallax_bias;
 			uv = uv + height * tsEye * normal.z;
 	}
 
-	if ((enable_parallaxmapping==2) && (use_normalmap>0)) {
+	if ((parallaxMappingMode==2) && (use_normalmap>0)) {
 		const float numSteps = 40.0;
 		float height = 1.0;
 		float step = 1.0 / numSteps;
