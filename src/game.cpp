@@ -807,6 +807,7 @@ public:
 
 		float time_of_day_f = m_client->getEnv().getTimeOfDayF();
 		services->setPixelShaderConstant("timeOfDay", &time_of_day_f, 1);
+		services->setVertexShaderConstant("timeOfDay", &time_of_day_f, 1);
 
 		LocalPlayer* player = m_client->getEnv().getLocalPlayer();
 		v3f eye_position = player->getEyePosition(); 

@@ -1201,7 +1201,7 @@ MapBlockMesh::MapBlockMesh(MeshMakeData *data):
 		if (enable_shaders) {
 			ITextureSource *tsrc = data->m_gamedef->tsrc();
 			material.setTexture(2, tsrc->getTexture("disable_img.png"));
-			material.setTexture(3, tsrc->getTexture(getTexturePath("water_surface_normalmap.png").c_str));
+			material.setTexture(3, tsrc->getTexture("water_surface_normalmap.png"));
 			if (enable_bumpmapping) {
 				std::string fname_base = tsrc->getTextureName(p.tile.texture_id);
 				std::string normal_ext = "_normal.png";
