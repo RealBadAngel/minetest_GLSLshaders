@@ -824,6 +824,7 @@ public:
 		LocalPlayer* player = m_client->getEnv().getLocalPlayer();
 		v3f eye_position = player->getEyePosition(); 
 		services->setPixelShaderConstant("eyePosition", (irr::f32*)&eye_position, 3);
+		services->setVertexShaderConstant("eyePosition", (irr::f32*)&eye_position, 3);
 
 		float enable_bumpmapping = 0;
 		if (g_settings->getBool("enable_bumpmapping"))
