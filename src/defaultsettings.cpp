@@ -131,6 +131,10 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("parallax_mapping_bias", "0.04");
 	settings->setDefault("enable_bumpmapping", "false");
 	settings->setDefault("enable_water_surface_shaders", "false");
+	settings->setDefault("enable_water_wave", "false");
+	settings->setDefault("water_wave_height", "0.4");
+	settings->setDefault("water_wave_speed", "50.0");
+	settings->setDefault("water_wave_length", "20.0");
 	settings->setDefault("enable_shaders", "true");
 	settings->setDefault("repeat_rightclick_time", "0.25");
 	settings->setDefault("enable_particles", "true");

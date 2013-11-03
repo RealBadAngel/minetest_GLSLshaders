@@ -809,6 +809,18 @@ public:
 		services->setPixelShaderConstant("timeOfDay", &time_of_day_f, 1);
 		services->setVertexShaderConstant("timeOfDay", &time_of_day_f, 1);
 
+		float enable_water_wave = 0;
+		if (g_settings->getBool("enable_water_wave")){
+			enable_water_wave = 1;
+			float water_wave_height = g_settings->getFloat("water_wave_height");
+			services->setVertexShaderConstant("waterWaveHeight", &water_wave_height, 1);
+			float water_wave_speed = g_settings->getFloat("water_wave_speed");
+			services->setVertexShaderConstant("waterWaveSpeed", &water_wave_speed, 1);
+			float water_wave_length = g_settings->getFloat("water_wave_length");
+			services->setVertexShaderConstant("waterWaveLength", &water_wave_length, 1);
+		}
+		services->setVertexShaderConstant("enableWaterWave", &enable_water_wave, 1);
+
 		LocalPlayer* player = m_client->getEnv().getLocalPlayer();
 		v3f eye_position = player->getEyePosition(); 
 		services->setPixelShaderConstant("eyePosition", (irr::f32*)&eye_position, 3);
