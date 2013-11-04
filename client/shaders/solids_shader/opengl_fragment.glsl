@@ -27,13 +27,13 @@ void main (void)
 	float height;
 	vec2 tsEye = -tsEyeVec.xy;
 
-	if ((parallaxMappingMode==1) && (use_normalmap>0)) {
+	if ((parallaxMappingMode == 1.0) && (use_normalmap > 0.0)) {
 		float map_height = texture2D(normalTexture, uv).a;
 			float height = parallaxMappingScale * map_height - parallaxMappingBias;
 			uv = uv + height * tsEye * normal.z;
 	}
 
-	if ((parallaxMappingMode==2) && (use_normalmap>0)) {
+	if ((parallaxMappingMode == 2.0) && (use_normalmap > 0.0)) {
 		const float numSteps = 40.0;
 		float height = 1.0;
 		float step = 1.0 / numSteps;
@@ -50,7 +50,7 @@ void main (void)
 		}
 	}
 
-	if ((enable_bumpmapping==1) && (use_normalmap>0)) {
+	if ((enable_bumpmapping == 1.0) && (use_normalmap > 0.0)) {
 		vec3 base = texture2D(baseTexture, uv).rgb;
 		vec3 bump = normalize(texture2D(normalTexture, uv).xyz * 2.0 - 1.0);
 		vec3 R = reflect(-eyeVec, bump);
@@ -58,7 +58,7 @@ void main (void)
 		float diffuse = max(dot(lVec, bump), 0.0);
  		color = diffuse * base;
 		float specular = pow(clamp(dot(R, lVec), 0.0, 1.0),1.0);
-		color += vec3(0.2 * specular * diffuse);
+		color += vec3(0.1 * specular * diffuse);
 	} else {
 		color = texture2D(baseTexture, uv).rgb;
 	}

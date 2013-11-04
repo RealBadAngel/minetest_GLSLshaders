@@ -85,12 +85,12 @@ float fresnel_dielectric(vec3 Incoming, vec3 Normal, float eta)
 void main (void)
 {
 
-vec2 fragCoord = fragPos.xy;
+vec2 fragCoord = fragPos.xz;
 	fragCoord = clamp(fragCoord,0.002,0.998);
 	vec3 sunPos = vec3(0.0);
 	sunPos.x=sin((timeOfDay-0.5)*3.14159);
 	float timer = timeOfDay*1600;
-	//cameraPos = eyePosition;
+	cameraPos = eyePosition;
 
 	//normal map
 	vec2 nCoord = vec2(0.0); //normal coords
@@ -166,7 +166,7 @@ vec2 fragCoord = fragPos.xy;
     
     //fresnel term
     float ior = 1.333;
-    //ior = (cameraPos.y>0.0)?(1.333/1.0):(1.0/1.333); //air to water; water to air
+    ior = (cameraPos.y>0.0)?(1.333/1.0):(1.0/1.333); //air to water; water to air
     float eta = max(ior, 0.00001);
     float fresnel = fresnel_dielectric(-vVec,nVec,eta);
       

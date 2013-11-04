@@ -27,12 +27,9 @@ float rand(vec2 co)
 void main(void)
 {
 	gl_Position = mWorldViewProj * gl_Vertex;
-	if (enableWaterWave == 1)
+	if (enableWaterWave == 1.0)
 	{
-		int wavelength = 20;
-		float waveheight = 0.4;
-		int wavespeed = 50;
-		int height_randomness = 1;
+		float height_randomness = 1.0;
 		vec4 pos2 = gl_Vertex;
 		pos2.y -= 3.0;
 		pos2.y -= sin (pos2.z/waterWaveLength + timeOfDay * waterWaveSpeed * waterWaveLength) * waterWaveHeight
@@ -54,7 +51,7 @@ void main(void)
 	worldPos = vec3(mTransWorld * gl_Vertex);
 	fragPos = ftransform();
 	viewPos = pos - gl_ModelViewMatrixInverse[3].xyz;
-	cameraPos = eyePosition;
+	//cameraPos = eyePosition;
 
 	vec4 color;
 	//color = vec4(1.0, 1.0, 1.0, 1.0);
