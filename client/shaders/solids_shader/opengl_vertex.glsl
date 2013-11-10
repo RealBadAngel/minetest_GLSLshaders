@@ -1,13 +1,14 @@
 uniform mat4 mWorldViewProj;
 uniform mat4 mInvWorld;
 uniform mat4 mTransWorld;
-
 uniform float dayNightRatio;
+
 uniform vec3 eyePosition;
 
 varying vec3 vPosition;
 varying vec3 eyeVec;
 varying vec3 tsEyeVec;
+varying vec4 vColor;
 
 void main(void)
 {
@@ -42,14 +43,14 @@ void main(void)
 		tangent  = normalize(gl_NormalMatrix * vec3(-1.0,  0.0,  0.0));
 		binormal = normalize(gl_NormalMatrix * vec3( 0.0, -1.0,  0.0));
 	}
-
-	mat3 tbnMatrix = mat3(	tangent.x, binormal.x, normal.x,
-							tangent.y, binormal.y, normal.y,
-							tangent.z, binormal.z, normal.z);
+	
+	mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
+                          tangent.y, binormal.y, normal.y,
+                          tangent.z, binormal.z, normal.z);
 
 	eyeVec = (gl_ModelViewMatrix * gl_Vertex).xyz;
 	tsEyeVec = normalize(eyeVec * tbnMatrix);
-
+	
 	vec4 color;
 	//color = vec4(1.0, 1.0, 1.0, 1.0);
 
@@ -90,7 +91,8 @@ void main(void)
 
 	color.a = gl_Color.a;
 
-	gl_FrontColor = gl_BackColor = color;
+	vColor = gl_FrontColor = gl_BackColor = color;
 
 	gl_TexCoord[0] = gl_MultiTexCoord0;
+
 }

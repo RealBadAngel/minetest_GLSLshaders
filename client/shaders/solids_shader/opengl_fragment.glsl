@@ -15,21 +15,26 @@ uniform vec3 eyePosition;
 varying vec3 vPosition;
 varying vec3 tsEyeVec;
 varying vec3 eyeVec;
+varying vec4 vColor;
+
+const float e = 2.718281828459;
 
 void main (void)
 {
-	float use_normalmap = texelFetch(useNormalmap,ivec2(1,1),0).r;
+	float use_normalmap = texture2D(useNormalmap,vec2(1.0,1.0)).r;
 	float enable_bumpmapping = enableBumpmapping;
 
 	vec3 color;
 	vec2 uv = gl_TexCoord[0].st;
 	float height;
-	vec2 tsEye = -tsEyeVec.xy;
+	vec2 tsEye = tsEyeVec.xy;
 	
 	if ((parallaxMappingMode == 1.0) && (use_normalmap > 0.0)) {
 		float map_height = texture2D(normalTexture, uv).a;
-			float height = parallaxMappingScale * map_height - parallaxMappingBias;
-			uv = uv + height * tsEye;
+			if (map_height < 1.0){
+				float height = parallaxMappingScale * map_height - parallaxMappingBias;
+				uv = uv + height * tsEyeVec.xy;
+			}
 	}
 
 	if ((parallaxMappingMode == 2.0) && (use_normalmap > 0.0)) {
@@ -51,10 +56,10 @@ void main (void)
 
 	if ((enable_bumpmapping == 1.0) && (use_normalmap > 0.0)) {
 		vec4 base = texture2D(baseTexture, uv);
-		vec3 vVec = normalize(tsEyeVec);
+		vec3 vVec = normalize(eyeVec);
 		vec3 bump = normalize(texture2D(normalTexture, uv).xyz * 2.0 - 1.0);
 		vec3 R = reflect(-vVec, bump);
-		vec3 lVec = normalize(vec3(0.0, -0.4, 0.5));
+		vec3 lVec = normalize(vVec*2);
 		float diffuse = max(dot(lVec, bump), 0.0);
 		float specular = pow(clamp(dot(R, lVec), 0.0, 1.0),1.0);
 		color = diffuse * base + 0.1 * specular * diffuse;
@@ -64,13 +69,13 @@ void main (void)
 
 	float alpha = texture2D(baseTexture, uv).a;
 	float e_const = 2.71828;
-	vec4 col = vec4(color.r, color.g, color.b, alpha);
+	vec4 col = vec4(color.r, color.g, color.b, alpha) * vColor;
 	col *= gl_Color;
 	col = col * col; // SRGB -> Linear
 	col *= 1.8;
-	col.r = 1.0 - exp(1.0 - col.r) / e_const;
-	col.g = 1.0 - exp(1.0 - col.g) / e_const;
-	col.b = 1.0 - exp(1.0 - col.b) / e_const;
+	col.r = 1.0 - exp(1.0 - col.r) / e;
+	col.g = 1.0 - exp(1.0 - col.g) / e;
+	col.b = 1.0 - exp(1.0 - col.b) / e;
 	col = sqrt(col); // Linear -> SRGB
 	if(fogDistance != 0.0){
 		float d = max(0.0, min(vPosition.z / fogDistance * 1.5 - 0.6, 1.0));
